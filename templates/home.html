@@ -6,6 +6,7 @@
 </head>
 <body>
     <div class="container mt-5">
+    {% if response %}
         <div>Question: {{response[0]}}</div>
         <form method="POST">
             <div class="form-group">
@@ -43,11 +44,6 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 
-
-        {% if response %}
-            <div class="mt-3">
-<!--                <pre class="bg-light p-3">The response is: {{ response }}</pre>-->
-            </div>
         {% endif %}
     </div>
 </body>

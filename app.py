@@ -9,7 +9,7 @@ client = OpenAI(api_key=api_key)
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def generate_text():
     response = client.completions.create(
         model="gpt-3.5-turbo-instruct",
@@ -22,14 +22,6 @@ def generate_text():
     return render_template('home.html', response=formatted_text)
     # return generated_text
 
-#takes text input and returns json of question and each multiple choice answer
-#{
-# Question: What is the minimum number of digits needed to represent the value of the product, 9 x 9 x 9?
-# A: 3,
-# B: 4,
-# C: 27,
-# D: 81
-# }
 def format_response(raw_input):
     print("raw = ", raw_input)
     tokens = raw_input.split("\n")
