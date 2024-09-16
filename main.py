@@ -10,12 +10,6 @@ app = Flask(__name__)
 api_key = os.getenv("API_KEY")
 client = OpenAI(api_key=api_key)
 
-
-print("API_KEY from app.py is : ", api_key)
-
-
-
-
 @app.route('/')
 def generate_text():
     response = client.completions.create(
