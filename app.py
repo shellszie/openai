@@ -1,6 +1,6 @@
 from doctest import debug
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
@@ -11,17 +11,24 @@ client = OpenAI(api_key=api_key)
 
 app = Flask(__name__)
 
+global domain
+domain = ""
+
 @app.route('/landing', methods=['GET'])
 def landing():
     return render_template('landing.html')
 
 @app.route('/question', methods=['GET', 'POST'])
 def generate_text():
+    global domain
+    if (domain == ""):
+        domain = request.form['domain']
+
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": "You are an expert educator who creates multiple-choice questions."},
-        {"role": "user",
-         "content": f"Generate a medium multiple-choice question about mathematics. Provide 4 options labeled A) B) C) D)"}
+        messages=[
+            {"role": "system", "content": "You are an expert educator who creates multiple-choice questions."},
+            {"role": "user", "content": f"Generate a medium multiple-choice question about {domain}. Provide 4 options labeled A) B) C) D)"}
         ]
         # prompt="Generate a medium multiple-choice question about mathematics. Provide 4 options labeled A) B) C) D) ",
         #        "Format as: >>QuestionA>>optionB>>optionC>>optionD>>option",
@@ -31,7 +38,7 @@ def generate_text():
     # breakpoint()
     generated_text = response.choices[0].message.content.strip()
     formatted_text = format_response(generated_text)
-    return render_template('question.html', response=formatted_text)
+    return render_template('question.html', response=formatted_text, domain=domain)
     # return generated_text
 
 def format_response(raw_input):
