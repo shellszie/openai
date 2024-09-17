@@ -11,7 +11,11 @@ client = OpenAI(api_key=api_key)
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/landing', methods=['GET'])
+def landing():
+    return render_template('landing.html')
+
+@app.route('/question', methods=['GET', 'POST'])
 def generate_text():
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -27,7 +31,7 @@ def generate_text():
     # breakpoint()
     generated_text = response.choices[0].message.content.strip()
     formatted_text = format_response(generated_text)
-    return render_template('home.html', response=formatted_text)
+    return render_template('question.html', response=formatted_text)
     # return generated_text
 
 def format_response(raw_input):
