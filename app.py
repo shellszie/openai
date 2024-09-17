@@ -12,7 +12,9 @@ client = OpenAI(api_key=api_key)
 app = Flask(__name__)
 
 global domain
+global q_count
 domain = ""
+q_count = 0
 
 @app.route('/landing', methods=['GET'])
 def landing():
@@ -23,7 +25,8 @@ def generate_text():
     global domain
     if (domain == ""):
         domain = request.form['domain']
-
+    global q_count
+    q_count+=1
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -38,7 +41,7 @@ def generate_text():
     # breakpoint()
     generated_text = response.choices[0].message.content.strip()
     formatted_text = format_response(generated_text)
-    return render_template('question.html', response=formatted_text, domain=domain)
+    return render_template('question.html', response=formatted_text, domain=domain, q_count=q_count)
     # return generated_text
 
 def format_response(raw_input):
